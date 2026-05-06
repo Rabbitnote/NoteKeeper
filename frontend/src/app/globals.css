@@ -1,0 +1,77 @@
+@import "tailwindcss";
+@config "../../tailwind.config.ts";
+
+:root {
+  /* Backgrounds */
+  --bg-app: #141416;
+  --bg-surface: #1c1c1f;
+  --bg-card: #222228;
+  --bg-input: #18181b;
+
+  /* Border */
+  --border: #2a2a30;
+
+  /* Text */
+  --text-primary: #eeeef0;
+  --text-secondary: #9090a0;
+  --text-tertiary: #6b6b7a;
+
+  /* Brand — Purple */
+  --brand: #7b72e9;
+  --brand-hover: #5a52c4;
+  --brand-tint: rgba(123, 114, 233, 0.15);
+  --brand-border: rgba(123, 114, 233, 0.3);
+
+  /* Live — Green */
+  --live: #3baa7a;
+  --live-tint: rgba(59, 170, 122, 0.15);
+
+  /* Amber — Tags */
+  --amber: #c4892a;
+  --amber-tint: rgba(196, 137, 42, 0.15);
+
+  /* Legacy (keep for compatibility) */
+  --background: #141416;
+  --foreground: #eeeef0;
+  --bg-primary: #222228;
+  --bg-secondary: #18181b;
+  --bg-tertiary: #1c1c1f;
+}
+
+@theme inline {
+  --color-background: var(--bg-app);
+  --color-foreground: var(--text-primary);
+  --color-bg-tertiary: var(--bg-tertiary);
+
+  /* Expose to Tailwind utilities */
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-tint: var(--brand-tint);
+  --color-brand-border: var(--brand-border);
+
+  --color-live: var(--live);
+  --color-live-tint: var(--live-tint);
+
+  --color-amber: var(--amber);
+  --color-amber-tint: var(--amber-tint);
+
+  --color-bg-app: var(--bg-app);
+  --color-bg-surface: var(--bg-surface);
+  --color-bg-card: var(--bg-card);
+  --color-bg-input: var(--bg-input);
+
+  --color-border: var(--border);
+
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary: var(--text-tertiary);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--bg-app);
+  color: var(--text-primary);
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
