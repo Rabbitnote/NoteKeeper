@@ -35,9 +35,9 @@ export default function NoteCard({ note, index, onClick }: Props) {
           <p className="text-text-primary font-medium text-sm leading-snug">
             {note.title}
           </p>
-          {note.description && (
+          {note.content && (
             <p className="text-text-tertiary text-xs mt-1 line-clamp-2">
-              {note.description}
+              {note.content}
             </p>
           )}
           <p className="text-text-tertiary text-xs mt-2">{note.createdAt}</p>

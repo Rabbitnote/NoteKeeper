@@ -9,6 +9,15 @@ import { KANBAN_COLUMNS } from "@/types/note";
 import NoteCard from "./noteCard";
 import NewNoteModal from "./newNoteModal";
 import NoteDetailModal from "./noteDetailModal";
+import { useSearchParams } from "next/navigation";
+
+import {
+  useCreateNote,
+  useDeleteNote,
+  useNotes,
+  useNoteStream,
+  useUpdateNote,
+} from "@/lib/hooks/useNotes";
 
 const COLUMN_ACCENT: Record<NoteStatus, string> = {
   todo: "var(--text-secondary)",
@@ -16,12 +25,16 @@ const COLUMN_ACCENT: Record<NoteStatus, string> = {
   done: "var(--live)",
 };
 
-const INITIAL_NOTES: Note[] = [];
-
 export default function KanbanBoard() {
-  const [notes, setNotes] = useState<Note[]>(INITIAL_NOTES);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+  const searchParams = useSearchParams();
+  const isLive = searchParams.get("tab") === "live";
+  const { data: notes = [] } = useNotes(isLive);
+  const { mutate: addNote } = useCreateNote();
+  const { mutate: editNote } = useUpdateNote();
+  const { mutate: removeNote } = useDeleteNote();
+  useNoteStream(isLive);
 
   const onDragEnd = (result: DropResult) => {
     const { destination, source, draggableId } = result;
@@ -31,47 +44,40 @@ export default function KanbanBoard() {
       destination.index === source.index
     )
       return;
-
-    setNotes((prev) => {
-      const dragged = prev.find((n) => n.id === draggableId)!;
-      const rest = prev.filter((n) => n.id !== draggableId);
-
-      const updated = {
-        ...dragged,
+    const note = notes.find((n) => n.id === draggableId);
+    if (!note) return;
+    editNote({
+      id: draggableId,
+      payload: {
+        title: note.title,
+        content: note.content,
         status: destination.droppableId as NoteStatus,
-      };
-
-      // Build ordered list per destination column, insert at correct index
-      const destColNotes = rest
-        .filter((n) => n.status === destination.droppableId)
-        .toSpliced(destination.index, 0, updated);
-
-      const otherNotes = rest.filter(
-        (n) => n.status !== destination.droppableId,
-      );
-
-      return [...otherNotes, ...destColNotes];
+      },
     });
   };
 
   const handleSaveNote = (
     id: string,
-    data: { title: string; description: string; status: NoteStatus },
+    data: { title: string; content: string; status: NoteStatus },
   ) => {
-    setNotes((prev) => prev.map((n) => (n.id === id ? { ...n, ...data } : n)));
+    editNote({ id, payload: data });
   };
 
   const handleDeleteNote = (id: string) => {
-    setNotes((prev) => prev.filter((n) => n.id !== id));
+    removeNote(id);
   };
 
-  const handleAddNote = (data: Omit<Note, "id" | "createdAt">) => {
-    const newNote: Note = {
-      ...data,
-      id: Date.now().toString(),
-      createdAt: "Just now",
-    };
-    setNotes((prev) => [...prev, newNote]);
+  const handleAddNote = (data: {
+    title: string;
+    content: string;
+    status: NoteStatus;
+  }) => {
+    addNote({
+      title: data.title,
+      content: data.content,
+      status: data.status,
+      is_live: isLive,
+    });
   };
 
   return (

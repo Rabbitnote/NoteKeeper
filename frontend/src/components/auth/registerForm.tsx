@@ -1,7 +1,10 @@
 "use client";
 
-import { Button, Form, Input } from "antd";
+import { App, Button, Form, Input } from "antd";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useMutation } from "@tanstack/react-query";
+import { registerUser } from "@/lib/auth";
 
 type RegisterFields = {
   username: string;
@@ -12,9 +15,27 @@ type RegisterFields = {
 
 export default function RegisterForm() {
   const [form] = Form.useForm<RegisterFields>();
+  const router = useRouter();
+  const { message } = App.useApp();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: (values: RegisterFields) =>
+      registerUser({
+        name: values.username,
+        email: values.email,
+        password: values.password,
+      }),
+    onSuccess: () => {
+      message.success("Account created! Please log in.");
+      router.push("/auth/login");
+    },
+    onError: (err: Error) => {
+      message.error(err.message ?? "Registration failed");
+    },
+  });
 
   const onFinish = (values: RegisterFields) => {
-    console.log("Register params:", values);
+    mutate(values);
   };
 
   return (
@@ -75,6 +96,7 @@ export default function RegisterForm() {
           size="large"
           className="w-full"
           style={{ backgroundColor: "var(--brand)" }}
+          loading={isPending}
         >
           Create Account
         </Button>

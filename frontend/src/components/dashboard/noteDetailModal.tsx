@@ -9,7 +9,7 @@ const { TextArea } = Input;
 
 type NoteFields = {
   title: string;
-  description: string;
+  content: string;
   status: NoteStatus;
 };
 
@@ -27,7 +27,7 @@ export default function NoteDetailModal({ note, onClose, onSave, onDelete }: Pro
     if (note) {
       form.setFieldsValue({
         title: note.title,
-        description: note.description,
+        content: note.content,
         status: note.status,
       });
     }
@@ -93,7 +93,7 @@ export default function NoteDetailModal({ note, onClose, onSave, onDelete }: Pro
           <Input placeholder="Note title" size="large" />
         </Form.Item>
 
-        <Form.Item name="description" label="Description">
+        <Form.Item name="content" label="Description">
           <TextArea
             placeholder="Write something..."
             rows={4}

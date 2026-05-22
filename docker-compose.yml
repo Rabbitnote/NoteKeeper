@@ -1,0 +1,31 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: notekeeper
+      POSTGRES_PASSWORD: notekeeper
+      POSTGRES_DB: notekeeper_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/db/migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U notekeeper -d notekeeper_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    ports:
+      - "8080:8080"
+    environment:
+      DB_URL: postgres://notekeeper:notekeeper@db:5432/notekeeper_db?sslmode=disable
+      JWT_SECRET: your_secret_here
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:

@@ -7,14 +7,14 @@ const { TextArea } = Input;
 
 type NewNoteFields = {
   title: string;
-  description: string;
+  content: string;
   status: NoteStatus;
 };
 
 type Props = {
   open: boolean;
   onClose: () => void;
-  onAdd: (note: Omit<Note, "id" | "createdAt">) => void;
+  onAdd: (note: { title: string; content: string; status: NoteStatus }) => void;
 };
 
 export default function NewNoteModal({ open, onClose, onAdd }: Props) {
@@ -61,7 +61,7 @@ export default function NewNoteModal({ open, onClose, onAdd }: Props) {
           <Input placeholder="Note title" size="large" />
         </Form.Item>
 
-        <Form.Item name="description" label="Description">
+        <Form.Item name="content" label="Description">
           <TextArea
             placeholder="Write something..."
             rows={4}

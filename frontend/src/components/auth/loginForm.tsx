@@ -1,31 +1,48 @@
 "use client";
 
-import { Button, Form, Input } from "antd";
+import { loginUser } from "@/lib/auth";
+import { useMutation } from "@tanstack/react-query";
+import { App, Button, Form, Input } from "antd";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 type LoginFields = {
-  username: string;
+  email: string;
   password: string;
 };
 
 export default function LoginForm() {
   const [form] = Form.useForm<LoginFields>();
   const router = useRouter();
-
+  const { message } = App.useApp();
+  const { mutate, isPending } = useMutation({
+    mutationFn: (values: LoginFields) =>
+      loginUser({
+        email: values.email,
+        password: values.password,
+      }),
+    onSuccess: (data) => {
+      localStorage.setItem("token", data.token);
+      document.cookie = `token=${data.token}; path=/; max-age=86400`;
+      message.success("Logged in!");
+      router.push("/dashboard/notes");
+    },
+    onError: (err: Error) => {
+      message.error(err.message ?? "Registration failed");
+    },
+  });
   const onFinish = (values: LoginFields) => {
-    console.log("Login params:", values);
-    router.push("/dashboard/notes");
+    mutate(values);
   };
 
   return (
     <Form form={form} layout="vertical" onFinish={onFinish} className="mt-4">
       <Form.Item
-        name="username"
-        label="Username"
-        rules={[{ required: true, message: "Please enter your username" }]}
+        name="email"
+        label="Email"
+        rules={[{ required: true, message: "Please enter your email" }]}
       >
-        <Input placeholder="Enter your username" size="large" />
+        <Input placeholder="Enter your email" size="large" />
       </Form.Item>
 
       <Form.Item
@@ -51,6 +68,7 @@ export default function LoginForm() {
           htmlType="submit"
           size="large"
           className="w-full"
+          loading={isPending}
           onClick={() => form.submit()}
           style={{ backgroundColor: "var(--brand)" }}
         >

@@ -1,0 +1,8 @@
+  # Environment                                                                                                                       
+  .env                                                                                                                                
+                                                                                                                                      
+  # Built binary                                                                                                                      
+  main                                                                                                                                
+   
+  # Mac                                                                                                                               
+  .DS_Store   

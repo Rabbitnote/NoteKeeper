@@ -4,17 +4,34 @@ import { Layout, Menu, Popconfirm } from "antd";
 import {
   FileTextOutlined,
   LogoutOutlined,
-  SettingOutlined,
+  ThunderboltOutlined,
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { getTokenPayload } from "@/lib/token";
 
 const { Sider } = Layout;
 
-const menuItems: MenuProps["items"] = [];
-
 export default function Sidebar() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const tab = searchParams.get("tab") ?? "my";
+  const user = getTokenPayload();
+  const menuItems: MenuProps["items"] = [
+    {
+      key: "my",
+      icon: <FileTextOutlined />,
+      label: "My Notes",
+      onClick: () => router.push("/dashboard/notes?tab=my"),
+    },
+    {
+      key: "live",
+      icon: <ThunderboltOutlined />,
+      label: "Live Notes",
+      onClick: () => router.push("/dashboard/notes?tab=live"),
+    },
+  ];
+
   return (
     <Sider
       width={240}
@@ -36,7 +53,7 @@ export default function Sidebar() {
         {/* Nav menu */}
         <Menu
           mode="inline"
-          defaultSelectedKeys={["notes"]}
+          selectedKeys={[tab]}
           items={menuItems}
           style={{
             background: "var(--bg-card)",
@@ -56,17 +73,17 @@ export default function Sidebar() {
             <span className="text-white text-sm font-semibold">T</span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-text-primary text-sm font-medium truncate">
-              Thanakorn
-            </p>
-            <p className="text-text-tertiary text-xs truncate">
-              thanakorn@email.com
-            </p>
+            <p>{user?.name ?? "User"}</p>
+            <p>{user?.email ?? ""}</p>
           </div>
           <Popconfirm
             title="Sign out"
             description="Are you sure you want to sign out?"
-            onConfirm={() => router.push("/auth/login")}
+            onConfirm={() => {
+              document.cookie = "token=; path=/; max-age=0";
+              localStorage.removeItem("token");
+              router.push("/auth/login");
+            }}
             okText="Sign out"
             cancelText="Cancel"
             okButtonProps={{ danger: true }}

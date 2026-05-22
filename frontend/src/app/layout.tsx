@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Geist_Mono } from "next/font/google";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
-import { ConfigProvider } from "antd";
+import { App, ConfigProvider } from "antd";
+import Providers from "@/components/providers";
 import "./globals.css";
 
 const inter = Inter({
@@ -29,6 +30,7 @@ export default function RootLayout({
       className={`${inter.className} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <Providers>
         <AntdRegistry>
           <ConfigProvider
             theme={{
@@ -68,9 +70,12 @@ export default function RootLayout({
               },
             }}
           >
-            {children}
+            <App>
+              {children}
+            </App>
           </ConfigProvider>
         </AntdRegistry>
+        </Providers>
       </body>
     </html>
   );

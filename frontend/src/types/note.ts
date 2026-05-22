@@ -3,8 +3,9 @@ export type NoteStatus = "todo" | "ongoing" | "done";
 export type Note = {
   id: string;
   title: string;
-  description: string;
+  content: string;
   status: NoteStatus;
+  is_live: boolean;
   createdAt: string;
 };
 
