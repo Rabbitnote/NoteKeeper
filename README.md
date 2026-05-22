@@ -2,6 +2,13 @@
 
 A real-time collaborative notes app with a Kanban board, live collaboration via SSE, and JWT authentication.
 
+## Screenshots
+
+![Login](backend/screenshots/Login.png)
+![Kanban Board](backend/screenshots/Kanbanboard.png)
+![New Note](backend/screenshots/new-note.png)
+![Live Notes](backend/screenshots/live-note.png)
+
 ## Stack
 
 **Backend**
