@@ -2,6 +2,8 @@ package main
 
 import (
 	"log"
+	"os"
+	"strings"
 
 	"notekeeper/backend/db"
 	"notekeeper/backend/internal/auth"
@@ -29,8 +31,14 @@ func main() {
 	broker := sse.NewBroker()
 	broker.Start()
 	r := gin.Default()
+	allowOrigins := []string{"http://localhost:3000"}
+	if extraOrigins := os.Getenv("ALLOWED_ORIGINS"); extraOrigins != "" {
+		for _, o := range strings.Split(extraOrigins, ",") {
+			allowOrigins = append(allowOrigins, strings.TrimSpace(o))
+		}
+	}
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowOrigins:     allowOrigins,
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
 		AllowCredentials: true,
