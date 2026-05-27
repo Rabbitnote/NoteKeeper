@@ -52,7 +52,7 @@ export function useNoteStream(isLive: boolean) {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    if (!isLive) return;
+    if (isLive) return;
     const token = localStorage.getItem("token");
     const es = new EventSource(
       `${process.env.NEXT_PUBLIC_API_URL}/notes/stream?token=${token}`,
