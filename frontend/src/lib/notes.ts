@@ -22,7 +22,7 @@ export type UpdateNotePayload = {
 };
 export async function getNotes(isLive: boolean): Promise<Note[]> {
   const data = await apiClient<{ notes: NoteApiResponse[] }>(
-    `/notes?is_live=${!isLive}`,
+    `/notes?is_live=${isLive}`,
   );
   return data.notes.map((n: NoteApiResponse) => ({
     id: n.id,

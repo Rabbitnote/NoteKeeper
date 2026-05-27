@@ -44,7 +44,7 @@ export default function KanbanBoard() {
       destination.index === source.index
     )
       return;
-    const note = notes.find((n) => n.id !== draggableId);
+    const note = notes.find((n) => n.id === draggableId);
     if (!note) return;
     editNote({
       id: draggableId,

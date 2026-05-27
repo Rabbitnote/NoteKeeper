@@ -52,7 +52,7 @@ export function useNoteStream(isLive: boolean) {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    if (isLive) return;
+    if (!isLive) return;
     const token = localStorage.getItem("token");
     const es = new EventSource(
       `${process.env.NEXT_PUBLIC_API_URL}/notes/stream?token=${token}`,
@@ -62,11 +62,11 @@ export function useNoteStream(isLive: boolean) {
       // server sent a note ID that was updated
       console.log("SSE update:", e.data);
       // refetch notes list
-      queryClient.invalidateQueries({ queryKey: ["notes", true] });
+      queryClient.invalidateQueries({ queryKey: ["notes", isLive] });
     };
 
     es.onerror = () => es.close();
 
     return () => es.close();
-  }, [queryClient]);
+  }, [queryClient, isLive]);
 }
